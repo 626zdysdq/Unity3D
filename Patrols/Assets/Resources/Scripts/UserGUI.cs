@@ -8,7 +8,6 @@ public class UserGUI : MonoBehaviour {
     private GUIStyle score_style = new GUIStyle();
     private GUIStyle text_style = new GUIStyle();
     private GUIStyle over_style = new GUIStyle();
-    public  int show_time = 8;                         //展示提示的时间长度
     void Start ()
     {
         action = SSDirector.GetInstance().CurrentScenceController as IUserAction;
@@ -17,8 +16,6 @@ public class UserGUI : MonoBehaviour {
         score_style.normal.textColor = new Color(1,0.92f,0.016f,1);
         score_style.fontSize = 16;
         over_style.fontSize = 25;
-        //展示提示
-        StartCoroutine(ShowTip());
     }
 
     void Update()
@@ -42,19 +39,6 @@ public class UserGUI : MonoBehaviour {
                 return;
             }
         }
-        if(show_time > 0)
-        {
-            GUI.Label(new Rect(Screen.width / 2-80 ,10, 100, 100), "按WSAD或方向键移动", text_style);
-            GUI.Label(new Rect(Screen.width / 2 - 87, 30, 100, 100), "成功躲避巡逻兵追捕加1分", text_style);
-        }
     }
-
-    public IEnumerator ShowTip()
-    {
-        while (show_time >= 0)
-        {
-            yield return new WaitForSeconds(1);
-            show_time--;
-        }
-    }
+		
 }

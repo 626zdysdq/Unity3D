@@ -36,10 +36,12 @@ public class GoPatrolAction : SSAction
         }
         //侦察移动
         Gopatrol();
-		Debug.Log ("AA");
+		Debug.Log (data.follow_player.ToString());
+		Debug.Log (data.wall_sign);
         //如果侦察兵需要跟随玩家并且玩家就在侦察兵所在的区域，侦查动作结束
         if (data.follow_player && data.wall_sign == data.sign)
         {
+			Debug.Log ("B");
             this.destroy = true;
             this.callback.SSActionEvent(this,0,this.gameobject);
         }
