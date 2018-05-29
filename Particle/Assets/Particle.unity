@@ -437,11 +437,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e45cff6bf09407fb7a042d16cdb261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 10000
-  size: 0.1
   minRadius: 5
   maxRadius: 10
-  clockwise: 1
+  count: 10000
+  size: 0.1
+  rotate: 1
   speed: 3
   pingPong: 0.02
   colorGradient:
@@ -3992,11 +3992,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e45cff6bf09407fb7a042d16cdb261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 10000
-  size: 0.1
   minRadius: 5
   maxRadius: 10
-  clockwise: 0
+  count: 12000
+  size: 0.1
+  rotate: 1
   speed: 3
   pingPong: 0.02
   colorGradient:
@@ -7470,7 +7470,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1593226900}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.5, y: -6, z: 0}
+  m_LocalPosition: {x: -22.5, y: -7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1225515070}
@@ -7489,7 +7489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   particleSystem: {fileID: 1593226904}
   seaResolution: 50
-  spacing: 0.5
+  spacing: 1
   noiseScale: 0.25
   heightScale: 1.5
   colorGradient:
@@ -7635,7 +7635,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1573759683
+  randomSeed: 198396048
   InitialModule:
     serializedVersion: 3
     enabled: 1

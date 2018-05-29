@@ -4,49 +4,64 @@ using UnityEngine;
 using UnityEngine.UI;
 public class Particlehole : MonoBehaviour {
 
-	public class CirclePosition  
+	public class particleClass  
 	{  
-		public float radius = 0f, angle = 0f, time = 0f;  
-		public CirclePosition(float radius, float angle, float time)  
+		public float radius = 0f; //粒子的运动半径
+		public float angle = 0f;  //粒子的角度
+		public float time = 0f;   //粒子的时间
+		public particleClass(float radius, float angle, float time)  
 		{  
-			this.radius = radius;   // 半径  
-			this.angle = angle;     // 角度  
-			this.time = time;       // 时间  
+			this.radius = radius;    
+			this.angle = angle;    
+			this.time = time;       
 		}  
 	}  
 
-	private ParticleSystem particleSys;  // 粒子系统  
-	private ParticleSystem.Particle[] particleArr;  // 粒子数组  
-	private CirclePosition[] circle; // 极坐标数组  
-	private int tier = 10;  // 速度差分层数 
+	//创建粒子系统
+	private ParticleSystem particleSystem; 
+	//粒子数组
+	private ParticleSystem.Particle[] particlesArray; 
+	//粒子属性数组
+	private particleClass[] particleAttr; 
+	//速度差分层书
+	private int tier = 10;  
 
-	public int count = 100000;       // 粒子数量  
-	public float size = 0.1f;      // 粒子大小  
-	public float minRadius = 5.0f;  // 最小半径  
-	public float maxRadius = 8.0f; // 最大半径  
-	public bool clockwise = true;   // 顺时针|逆时针  
-	public float speed = 0.8f;        // 速度  
-	public float pingPong = 0.02f;  // 游离范围  
-	public Gradient colorGradient; 
+	//粒子运动的最小半径
+	public float minRadius = 5.0f;  
+	//粒子运动的最大半径
+	public float maxRadius = 8.0f; 
+
+	//粒子数目
+	public int count = 12000;
+	//粒子的大小
+	public float size = 0.1f; 
+	//粒子的旋转方向
+	public bool rotate = true; 
+	//旋转速度
+	public float speed = 0.8f; 
+	//粒子的游离范围  
+	public float pingPong = 0.02f; 
+	public Gradient colorGradient;
+	//标记光环当前的状态(粗或细）
 	public int flag;
-
+	//按钮
 	public GameObject my_button;
 	 
 
 	// Use this for initialization
 	void Start () {
 		// 初始化粒子数组  
-		particleArr = new ParticleSystem.Particle[count];  
-		circle = new CirclePosition[count];  
+		particlesArray = new ParticleSystem.Particle[count];  
+		particleAttr = new particleClass[count];  
 
 		// 初始化粒子系统  
-		particleSys = this.GetComponent<ParticleSystem>();  
-		particleSys.startSpeed = 0;            // 粒子位置由程序控制  
-		particleSys.startSize = size;          // 设置粒子大小  
-		particleSys.loop = false;  
-		particleSys.maxParticles = count;      // 设置最大粒子量  
-		particleSys.Emit(count);               // 发射粒子  
-		particleSys.GetParticles(particleArr);  
+		particleSystem = this.GetComponent<ParticleSystem>();  
+		particleSystem.startSpeed = 0;            // 粒子位置由程序控制  
+		particleSystem.startSize = size;          // 设置粒子大小  
+		particleSystem.loop = false;  
+		particleSystem.maxParticles = count;      // 设置最大粒子量  
+		particleSystem.Emit(count);               // 发射粒子  
+		particleSystem.GetParticles(particlesArray);  
 
 		// 初始化梯度颜色控制器  
 		GradientAlphaKey[] alphaKeys = new GradientAlphaKey[5];  
@@ -54,23 +69,30 @@ public class Particlehole : MonoBehaviour {
 		alphaKeys[1].time = 0.4f; alphaKeys[1].alpha = 0.4f;  
 		alphaKeys[2].time = 0.6f; alphaKeys[2].alpha = 1.0f;  
 		alphaKeys[3].time = 0.9f; alphaKeys[3].alpha = 0.4f;  
-		alphaKeys[4].time = 1.0f; alphaKeys[4].alpha = 0.9f;  
+		alphaKeys[4].time = 1.0f; alphaKeys[4].alpha = 0.9f;
+
+		//设置色彩梯度，首位最好为同一种颜色，否则会出现断层
+		//可以通过赠加数组的长度来增加颜色的种类
 		GradientColorKey[] colorKeys = new GradientColorKey[2];  
 		colorKeys[0].time = 0.0f; colorKeys[0].color = Color.yellow;
 		colorKeys[1].time = 1.0f; colorKeys[1].color = Color.yellow;  
 		colorGradient.SetKeys(colorKeys, alphaKeys);  
 
-		RandomlySpread();   // 初始化各粒子位置   
+		initialization();   // 初始化各粒子位置   
+
+		//建立监听器，改变通过改变粒子的最大值和最小值来使光环变粗或变细
 		my_button.GetComponent<Button> ().onClick.AddListener (() => {
 			flag = (flag == -1) ? 0 : 1 - flag;
 			if (flag == 0) {
-				minRadius = 5.0f;  // 最小半径  
+				//粗
+				minRadius = 5.0f;   
 				maxRadius = 8.0f;
 			} else if (flag == 1) {
-				minRadius = 6.0f;  // 最小半径  
+				//细
+				minRadius = 6.0f;   
 				maxRadius = 7.0f;
 			}
-			RandomlySpread ();
+			initialization ();
 		});
 	}
 
@@ -79,29 +101,48 @@ public class Particlehole : MonoBehaviour {
 	void Update () {
 		for (int i = 0; i < count; i++)  
 		{  
-			if (clockwise)  // 顺时针旋转  
-				circle[i].angle -= (i % tier + 1) * (speed / circle[i].radius / tier);  
+			if (rotate)  // 顺时针旋转  
+				particleAttr[i].angle -= (i % tier + 1) * (speed / particleAttr[i].radius / tier);  
 			else            // 逆时针旋转  
-				circle[i].angle += (i % tier + 1) * (speed / circle[i].radius / tier);  
+				particleAttr[i].angle += (i % tier + 1) * (speed / particleAttr[i].radius / tier);  
 
 			// 保证angle在0~360度  
-			circle[i].angle = (360.0f + circle[i].angle) % 360.0f;  
-			float theta = circle[i].angle / 180 * Mathf.PI;  
+			particleAttr[i].angle = (360.0f + particleAttr[i].angle) % 360.0f;  
+			float theta = particleAttr[i].angle / 180 * Mathf.PI; 
 
-			particleArr[i].position = new Vector3(circle[i].radius * Mathf.Cos(theta), 0f, circle[i].radius * Mathf.Sin(theta));  
+			/*if (flag == 0) {
+				minRadius = 5.0f;   
+				maxRadius = 8.0f;
+			} else if (flag == 1) {
+				minRadius = 6.0f;   
+				maxRadius = 7.0f;
+			}*/
+
+			particlesArray[i].position = new Vector3(particleAttr[i].radius * Mathf.Cos(theta), 0f, particleAttr[i].radius * Mathf.Sin(theta));  
 			// 粒子在半径方向上游离  
-			circle[i].time += Time.deltaTime;  
-			circle[i].radius += Mathf.PingPong(circle[i].time / minRadius / maxRadius, pingPong) - pingPong / 2.0f;
+			particleAttr[i].time += Time.deltaTime;  
+			particleAttr[i].radius += Mathf.PingPong(particleAttr[i].time / minRadius / maxRadius, pingPong) - pingPong / 2.0f;
 
-			particleArr[i].color = colorGradient.Evaluate(circle[i].angle / 360.0f);
+			particlesArray[i].color = colorGradient.Evaluate(particleAttr[i].angle / 360.0f);
 		}  
 			 
 
-		particleSys.SetParticles(particleArr, particleArr.Length);  
+		particleSystem.SetParticles(particlesArray, particlesArray.Length);  
 	}
 
 
-	void RandomlySpread()  
+	//不可用，一个系统的OnGUI会被另一个系统的覆盖
+	/*void OnGUI()
+	{
+		if (GUI.Button(new Rect(0, 10, 100, 30), "变粗/变细"))
+		{
+			//flag = (flag == -1)? 0: 1 - flag;
+		}
+	}*/
+
+
+
+	void initialization()  
 	{  
 		for (int i = 0; i < count; ++i)  
 		{   // 随机每个粒子距离中心的半径，同时希望粒子集中在平均半径附近  
@@ -117,14 +158,13 @@ public class Particlehole : MonoBehaviour {
 			// 随机每个粒子的游离起始时间  
 			float time = Random.Range(0.0f, 360.0f);  
 
-			circle[i] = new CirclePosition(radius, angle, time);  
+			particleAttr[i] = new particleClass(radius, angle, time);  
 
-			particleArr[i].position = new Vector3(circle[i].radius * Mathf.Cos(theta), 0f, circle[i].radius * Mathf.Sin(theta));  
+			particlesArray[i].position = new Vector3(particleAttr[i].radius * Mathf.Cos(theta), 0f, particleAttr[i].radius * Mathf.Sin(theta));  
 		}  
 
-		particleSys.SetParticles(particleArr, particleArr.Length);  
+		particleSystem.SetParticles(particlesArray, particlesArray.Length);  
 	}  
-
-
+		
 
 }
