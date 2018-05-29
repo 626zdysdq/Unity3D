@@ -7,7 +7,6 @@ public class PropFactory : MonoBehaviour
     private GameObject patrol = null;                              //巡逻兵
     private List<GameObject> used = new List<GameObject>();        //正在被使用的巡逻兵
     private Vector3[] vec = new Vector3[9];                        //保存每个巡逻兵的初始位置
-
     public FirstSceneController sceneControler;                    //场景控制器
 
     public List<GameObject> GetPatrols()
