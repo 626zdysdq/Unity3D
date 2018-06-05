@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class show : MonoBehaviour {  
 
-	private Button yourButton;  
+	private Button myButton;  
 	public Text text;  
 	private int frame = 20;  
 
 	// Use this for initialization  
 	void Start()  
 	{  
-		Button btn = this.gameObject.GetComponent<Button>();  
-		btn.onClick.AddListener(TaskOnClick);  
+		Button butoon = this.gameObject.GetComponent<Button>();  
+		butoon.onClick.AddListener(Click);  
 	}  
 
 	IEnumerator rotateIn()  
@@ -53,7 +53,7 @@ public class show : MonoBehaviour {
 	}  
 
 
-	void TaskOnClick()  
+	void Click()  
 	{  
 		if (text.gameObject.activeSelf)  
 		{  
