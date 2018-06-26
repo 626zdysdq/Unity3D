@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4331303011892234}
   - component: {fileID: 114191945558864060}
-  - component: {fileID: 114426879558600332}
+  - component: {fileID: 114705852278244146}
   m_Layer: 0
   m_Name: Speaker
   m_TagString: Untagged
@@ -73,7 +73,7 @@ MonoBehaviour:
     i15: 65
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &114426879558600332
+--- !u!114 &114705852278244146
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
